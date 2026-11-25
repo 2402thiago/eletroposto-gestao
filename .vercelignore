@@ -1,0 +1,21 @@
+# Logs e sessões
+session-*.md
+
+# Credenciais e configuração local
+.config/
+.local/
+.npm/
+.cache/
+.gitconfig
+
+# Arquivos do sistema
+.bash_history
+.bashrc
+.profile
+
+# Git e Vercel internos
+.git/
+.vercel/
+
+# Saída do graphify (local)
+graphify-out/

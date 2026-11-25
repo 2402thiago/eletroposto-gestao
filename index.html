@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#f97316">
+<title>Eletroposto · Operação</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tile.openstreetmap.org; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" id="apple-touch-icon" href="icon-192.png">
+  <link rel="icon" id="site-favicon" type="image/png" href="./icon-192.png">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="analise/vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="analise/analise.css">
+</head>
+<body>
+<svg aria-hidden="true" width="0" height="0" style="position:absolute"><defs>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 20c.4-3.4 2.2-5.2 5.5-5.2s5.1 1.8 5.5 5.2M16 5.5a3 3 0 0 1 0 5.8M17 14.8c2.1.4 3.3 2 3.5 4.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M4 8h16l-1 12H5L4 8Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 8a4 4 0 0 1 8 0M9 12v1M15 12v1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H19v16H6.5A2.5 2.5 0 0 1 4 17.5v-11Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 7h15M15 12h5v4h-5a2 2 0 0 1 0-4Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="15.5" cy="14" r=".7" fill="currentColor"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M19 13.2a7.2 7.2 0 0 0 0-2.4l2-1.5-2-3.4-2.3 1a7.7 7.7 0 0 0-2-1.2L14.4 3h-4l-.4 2.7a7.7 7.7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5a7.2 7.2 0 0 0 0 2.4l-2 1.5 2 3.4 2.3-1a7.7 7.7 0 0 0 2 1.2l.4 2.7h4l.4-2.7a7.7 7.7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 15.2A8 8 0 0 1 8.8 4a8.1 8.1 0 1 0 11.2 11.2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3M12 14.5v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 10.5v5M12 7.5h.01" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-chevron-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0V8ZM12 17v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V3M7.5 7.5 12 3l4.5 4.5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="16" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="10" cy="17" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2.5 20h19L12 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 10v4.5M12 17.5h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cash" viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 20h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-export" viewBox="0 0 24 24"><path d="M12 3v12M7.5 10.5 12 15l4.5-4.5M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-import" viewBox="0 0 24 24"><path d="M12 15V3M7.5 7.5 12 3l4.5 4.5M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</defs></svg>
+<aside class="sidebar" aria-label="Navegação principal">
+  <div class="brand">
+    <img id="brand-logo" data-brand-logo src="icon-192.png" alt="Eletroposto">
+    <span id="brand-name" data-brand-name>Eletroposto</span>
+  </div>
+  <nav class="tabs nav-list" id="tabs" aria-label="Navegação principal">
+    <button type="button" class="tab-btn" data-tab="tab-dashboard"><span class="tab-icon" aria-hidden="true"><svg><use href="#i-chart"/></svg></span><span class="tab-label">Dashboard</span></button>
+    <button type="button" class="tab-btn" data-tab="tab-analise"><span class="tab-icon" aria-hidden="true"><svg><use href="#i-pin"/></svg></span><span class="tab-label">Análise</span></button>
+    <button type="button" class="tab-btn active" data-tab="tab-andamento"><span class="tab-icon" aria-hidden="true"><svg><use href="#i-bolt"/></svg></span><span class="tab-label">Operação</span></button>
+    <button type="button" class="tab-btn" data-tab="tab-cadastro"><span class="tab-icon" aria-hidden="true"><svg><use href="#i-users"/></svg></span><span class="tab-label">Cadastros</span></button>
+    <button type="button" class="tab-btn" data-tab="tab-vendas"><span class="tab-icon" aria-hidden="true"><svg><use href="#i-bag"/></svg></span><span class="tab-label">Vendas</span></button>
+    <button type="button" class="tab-btn" data-tab="tab-historico"><span class="tab-icon" aria-hidden="true"><svg><use href="#i-clock"/></svg></span><span class="tab-label">Histórico</span></button>
+    <button type="button" class="tab-btn" data-tab="tab-caixa"><span class="tab-icon" aria-hidden="true"><svg><use href="#i-wallet"/></svg></span><span class="tab-label">Caixa</span></button>
+    <button type="button" class="tab-btn" data-tab="tab-config"><span class="tab-icon" aria-hidden="true"><svg><use href="#i-settings"/></svg></span><span class="tab-label">Configurações</span></button>
+  </nav>
+</aside>
+
+<header class="topbar" id="topbar">
+  <div class="topbar-brand"><img data-brand-logo src="icon-192.png" alt=""><span data-brand-name>Eletroposto</span></div>
+  <div class="modo-switch" role="group" aria-label="Modo do aparelho"><button type="button" data-modo-app="operador" aria-pressed="true" class="active">Operador</button><button type="button" data-modo-app="admin" aria-pressed="false">Admin</button></div>
+  <button type="button" class="icon-btn" id="btn-tema-topbar" title="Usar tema escuro" aria-label="Usar tema escuro" data-theme-toggle><svg aria-hidden="true"><use href="#i-moon"/></svg></button>
+  <label class="operator" title="Operador ativo: registrado nos abastecimentos e vendas">
+    <span class="operador-avatar" id="operador-avatar" aria-hidden="true">OP</span>
+    <img id="perfil-ativo-foto" class="perfil-foto" alt="" hidden>
+    <span class="operador-copy"><strong id="operador-nome">Operador</strong><small id="operador-turno">Toque para escolher</small></span>
+    <select id="select-perfil-ativo" aria-label="Operador ativo"><option value="">Selecionar operador</option></select>
+  </label>
+</header>
+
+<div class="container">
+  <div id="alert-box" class="alert"></div>
+
+  <div id="faixa-demo" class="aviso-conexao faixa-demo" role="status" hidden>
+    <span><strong>Demonstração:</strong> posto, pessoas e valores são fictícios e ficam só neste navegador. PIN do admin: 1234.</span>
+    <button type="button" class="link-btn" id="btn-restaurar-demo">Restaurar dados da demo</button>
+  </div>
+
+  <div id="aviso-backup" class="aviso-conexao aviso-backup" role="status" hidden>
+    <span id="aviso-backup-texto">Faça um backup dos dados deste aparelho.</span>
+    <button type="button" class="link-btn" id="btn-backup-aviso">Exportar backup</button>
+    <button type="button" class="icon-btn" id="btn-dispensar-aviso-backup" title="Lembrar depois" aria-label="Lembrar depois"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+  </div>
+
+  <div id="notificacoes-5min" class="notificacoes-5min" role="alert" aria-live="polite" aria-atomic="true"></div>
+
+  <div id="modal-edicao" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Editar recarga</h2>
+        <button type="button" class="modal-close" id="modal-fechar" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <form id="form-edicao">
+        <div class="form-row">
+          <h3 class="secao-form">Veículo</h3>
+          <div class="field">
+            <label for="edit-placa">Placa <span class="req">*</span></label>
+            <select id="edit-placa" required></select>
+          </div>
+          <div class="field">
+            <label for="edit-cliente">Cliente <span class="req">*</span></label>
+            <input type="text" id="edit-cliente" autocomplete="off" required>
+          </div>
+          <div class="field">
+            <label for="edit-modelo">Modelo <span class="req">*</span></label>
+            <input type="text" id="edit-modelo" autocomplete="off" required>
+          </div>
+          <h3 class="secao-form">Recarga</h3>
+          <div class="field">
+            <label for="edit-data">Data e hora <span class="req">*</span></label>
+            <input type="datetime-local" id="edit-data" required>
+          </div>
+          <div class="field">
+            <label for="edit-operador">Operador</label>
+            <select id="edit-operador"></select>
+          </div>
+          <div class="field">
+            <label for="edit-turno">Turno <span class="req">*</span></label>
+            <select id="edit-turno" required>
+              <option value="1">Turno 1</option>
+              <option value="2">Turno 2</option>
+            </select>
+          </div>
+          <h3 class="secao-form">Energia</h3>
+          <div class="field">
+            <label>Leituras do carregador <span class="req">*</span></label>
+            <div id="edit-kwh-partes" class="kwh-partes"></div>
+            <button type="button" class="btn btn-quiet btn-sm" id="btn-add-edit-kwh">Somar outra leitura</button>
+            <span class="hint">Some cada leitura quando a recarga precisar ser reiniciada.</span>
+          </div>
+          <input type="hidden" id="edit-kwh" required>
+          <div class="field">
+            <label for="edit-valor-kwh">Tarifa (R$/kWh) <span class="req">*</span></label>
+            <input type="text" class="currency-input" id="edit-valor-kwh" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off" required>
+          </div>
+          <div class="field">
+            <label for="edit-valor-pagar">Valor da recarga</label>
+            <input type="text" id="edit-valor-pagar" class="calc-result" readonly>
+          </div>
+          <h3 class="secao-form">Pagamento</h3>
+          <div class="field" id="campo-edit-metodo">
+            <label for="edit-metodo">Pagamento <span class="req">*</span></label>
+            <select id="edit-metodo" required>
+              <option value="Pix">Pix</option>
+              <option value="Dinheiro">Dinheiro</option>
+              <option value="Crédito">Crédito</option>
+              <option value="Débito">Débito</option>
+              <option value="Cortesia">Cortesia</option>
+              <option value="Pendente">Pendente</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Pagamento dividido em mais de um método?</label>
+            <div class="radio-group">
+              <label class="radio-opt"><input type="radio" name="edit-pag-div" value="Não" checked> Não</label>
+              <label class="radio-opt"><input type="radio" name="edit-pag-div" value="Sim"> Sim</label>
+            </div>
+          </div>
+          <h3 class="secao-form">Conveniência</h3>
+          <div class="field">
+            <label>Consumo na conveniência</label>
+            <div class="radio-group">
+              <label class="radio-opt"><input type="radio" name="edit-consumo" value="Não" checked> Não</label>
+              <label class="radio-opt"><input type="radio" name="edit-consumo" value="Sim"> Sim</label>
+            </div>
+          </div>
+          <div class="field" id="campo-edit-produto-consumo" style="display:none;"><label>Produtos consumidos <span class="req">*</span></label><div id="edit-consumo-itens" class="consumo-itens"></div><button type="button" class="btn btn-outline" id="btn-add-edit-consumo">Adicionar produto</button><span class="hint" id="edit-consumo-hint">Os itens viram pré-registros de venda na aba Em Andamento.</span><select id="edit-consumo-produto" hidden><option value=""></option></select><input type="number" id="edit-consumo-qtd" hidden value="1"></div>
+        </div>
+        <div class="split-area" id="campo-edit-divisao" style="display:none;">
+          <label class="split-label">Parcelas do pagamento</label>
+          <div id="edit-divisao-lista" class="split-rows"></div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px;">
+            <button type="button" class="btn btn-quiet btn-sm" id="btn-add-edit-divisao">Adicionar método</button>
+            <span id="soma-edit-divisao" class="split-sum"></span>
+          </div>
+        </div>
+        <div class="field" id="campo-edit-dinheiro" hidden><label>Recebido em dinheiro</label><div class="cash-breakdown"><input type="text" class="currency-input" id="edit-cedulas-recebidas" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"><input type="text" class="currency-input" id="edit-moedas-recebidas" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"></div><span class="hint" id="edit-dinheiro-dica" aria-live="polite"></span></div>
+        <div class="field" id="campo-edit-troco" hidden><label>Troco devolvido</label><div class="cash-breakdown"><input type="text" class="currency-input" id="edit-cedulas-troco" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"><input type="text" class="currency-input" id="edit-moedas-troco" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"></div></div>
+        <div class="edicao-acoes-registro">
+          <button type="button" class="btn btn-outline" id="btn-edicao-desfazer" data-desfazer-reg="">Desfazer pagamento</button>
+          <button type="button" class="btn btn-outline btn-danger-outline" id="btn-edicao-excluir" data-remover-reg="">Excluir registro</button>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-block">Salvar alterações</button>
+          <button type="button" class="btn btn-outline fin-oculto" id="btn-cancelar-edicao">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-cliente-edicao" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-titulos"><h2>Editar cliente</h2><p class="modal-sub" id="editc-titulo"></p></div>
+        <button type="button" class="modal-close" id="modal-fechar-cliente" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <form id="form-cliente-edicao">
+        <div class="form-row">
+          <div class="field">
+            <label for="editc-placa">Placa <span class="req">*</span></label>
+            <input type="text" id="editc-placa" maxlength="8" autocomplete="off" required>
+            <span class="hint">Padrão Mercosul, como ABC1D23.</span>
+          </div>
+          <div class="field">
+            <label for="editc-nome">Nome do cliente <span class="req">*</span></label>
+            <input type="text" id="editc-nome" autocomplete="off" required>
+          </div>
+          <div class="field">
+            <label for="editc-modelo">Modelo <span class="req">*</span></label>
+            <select id="editc-modelo" required>
+              <option value="">Selecione ou digite...</option>
+            </select>
+            <span class="hint">O modelo define a bateria usada no tempo estimado. Escolha Outro para digitar.</span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-block">Salvar alterações</button>
+          <button type="button" class="btn btn-outline fin-oculto" id="btn-cancelar-cliente-edicao">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-finalizar" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Finalizar recarga<span id="fin-titulo" class="sr-only"></span></h2>
+        <button type="button" class="modal-close" id="modal-fechar-finalizar" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <div class="alert success show" style="margin-bottom:16px;">
+        <span id="fin-info">Modelo: — · Início: — · Tempo decorrido: 00:00:00</span>
+      </div>
+      <form id="form-finalizar">
+        <div class="form-row">
+          <div class="field">
+            <label>Leituras de kWh <span class="req">*</span></label>
+            <div id="fin-kwh-partes" class="kwh-partes"></div>
+            <button type="button" class="btn btn-outline" id="btn-add-fin-kwh">Adicionar kWh</button>
+            <span class="hint">Some cada leitura quando a recarga precisar ser reiniciada.</span>
+          </div>
+          <input type="hidden" id="fin-kwh" required>
+          <div class="field">
+            <label for="fin-valor-kwh">Valor do KWH (R$)</label>
+            <input type="text" class="currency-input" id="fin-valor-kwh" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off" value="R$ 1,50" required>
+          </div>
+          <div class="field">
+            <label for="fin-valor-pagar">Valor a ser Pago</label>
+            <input type="text" id="fin-valor-pagar" class="calc-result" readonly placeholder="R$ 0,00">
+            <span class="hint">KWH Utilizado × Valor do KWH + consumo (o histórico registra apenas a recarga)</span>
+          </div>
+          <div class="field" id="campo-fin-metodo">
+            <label for="fin-metodo">Método de Pagamento <span class="req">*</span></label>
+            <select id="fin-metodo" required>
+              <option value="Pix" selected>Pix</option>
+              <option value="Dinheiro">Dinheiro</option>
+              <option value="Crédito">Crédito</option>
+              <option value="Débito">Débito</option>
+              <option value="Cortesia">Cortesia</option>
+              <option value="Pendente">Pendente</option>
+            </select>
+          </div>
+          <div class="field" id="campo-fin-dinheiro" style="display:none;"><label>Recebido em dinheiro <span class="req">*</span></label><div class="cash-breakdown"><input type="text" class="currency-input" id="fin-cedulas-recebidas" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"><input type="text" class="currency-input" id="fin-moedas-recebidas" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"></div><input type="hidden" id="fin-valor-entregue"><span class="hint">Informe como o cliente pagou fisicamente.</span></div>
+          <div class="field" id="campo-fin-troco" style="display:none;"><label>Troco devolvido (opcional)</label><div class="cash-breakdown"><input type="text" class="currency-input" id="fin-cedulas-troco" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"><input type="text" class="currency-input" id="fin-moedas-troco" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"></div><input type="text" id="fin-troco" class="calc-result" readonly placeholder="Troco sugerido"></div>
+          <div class="field" id="campo-fin-div">
+            <label>Pagamento dividido em mais de um método?</label>
+            <div class="radio-group">
+              <label class="radio-opt"><input type="radio" name="fin-pag-div" value="Não" checked> Não</label>
+              <label class="radio-opt"><input type="radio" name="fin-pag-div" value="Sim"> Sim</label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Consumo na Conveniência</label>
+            <div class="radio-group">
+              <label class="radio-opt"><input type="radio" name="fin-consumo" value="Não" checked> Não</label>
+              <label class="radio-opt"><input type="radio" name="fin-consumo" value="Sim"> Sim</label>
+            </div>
+          </div>
+          <div class="field" id="campo-fin-produto-consumo" style="display:none;"><label>Produtos consumidos na conveniência <span class="req">*</span></label><div id="fin-consumo-itens" class="consumo-itens"></div><button type="button" class="btn btn-add-fin-consumo" id="btn-add-fin-consumo">Adicionar produto</button><span class="hint" id="fin-consumo-hint">Os itens viram pré-registros de venda na aba Em Andamento.</span></div>
+          <div class="field" id="campo-fin-consumos-vinculados" style="display:none;"><label>Produtos vinculados à recarga</label><div id="fin-consumos-vinculados" class="consumo-itens"></div><span class="hint">Estes produtos já tiveram o estoque reservado e já estão incluídos no total.</span></div>
+        </div>
+        <div class="split-area" id="campo-fin-divisao" style="display:none;">
+          <label class="split-label">Parcelas do Pagamento</label>
+          <div id="fin-divisao-lista" class="split-rows"></div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px;">
+            <button type="button" class="btn btn-outline" id="btn-add-fin-divisao">+ Adicionar método</button>
+            <span id="soma-fin-divisao" class="split-sum"></span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" id="btn-salvar-kwh-parcial">Salvar kWh parcial e continuar</button>
+          <button type="submit" class="btn btn-primary">Finalizar abastecimento</button>
+          <button type="button" class="btn btn-outline" id="btn-cancelar-finalizar">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <div id="modal-fechar-turno" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header"><h2>Fechar turno</h2><button type="button" class="modal-close" id="modal-fechar-fechamento" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <form id="form-fechar-turno">
+        <p class="resumo-folha">Primeiro registra a saída do dinheiro do turno no caixa. Depois envia os relatórios de recargas, vendas e caixa numa mensagem do WhatsApp.</p>
+        <div class="form-row"><div class="field"><label for="fechamento-turno">Turno <span class="req">*</span></label><select id="fechamento-turno" required><option value="1">Turno 1</option><option value="2">Turno 2</option></select></div><div class="field"><label for="fechamento-operador">Operador</label><select id="fechamento-operador"><option value="">Todos os operadores</option></select></div></div>
+        <div class="form-row"><div class="field"><label for="fechamento-data-de">De</label><input type="date" id="fechamento-data-de" required></div><div class="field"><label for="fechamento-data-ate">Até</label><input type="date" id="fechamento-data-ate" required></div></div>
+        <div class="form-actions"><button type="submit" class="btn btn-primary btn-block">Continuar</button><button type="button" class="btn btn-outline fin-oculto" id="btn-cancelar-fechamento">Cancelar</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: EDITAR PREVISÃO DE TÉRMINO ============ -->
+  <div id="modal-previsao" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-titulos"><h2>Editar previsão</h2><p class="modal-sub" id="prev-titulo"></p></div>
+        <button type="button" class="modal-close" id="modal-fechar-previsao" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <p class="resumo-folha" id="prev-info"></p>
+      <form id="form-previsao">
+        <div class="form-row">
+          <div class="field">
+            <label for="prev-bateria">Bateria agora (%) <span class="req">*</span></label>
+            <input type="number" id="prev-bateria" min="0" max="100" step="any" inputmode="numeric" placeholder="45" required>
+            <div class="quick-values" data-quick-for="prev-bateria"><button type="button" data-value="50">50%</button><button type="button" data-value="60">60%</button><button type="button" data-value="70">70%</button><button type="button" data-value="80">80%</button><button type="button" data-value="90">90%</button></div>
+            <span class="hint">A bateria <strong id="prev-novo-bateria">—</strong></span>
+          </div>
+          <div class="field">
+            <label for="prev-restante">Tempo restante (min) <span class="req">*</span></label>
+            <input type="number" id="prev-restante" min="1" step="1" inputmode="numeric" placeholder="15" required>
+            <span class="hint">Novo horário de término: <strong id="prev-novo-termino">—</strong></span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-block">Salvar previsão</button>
+          <button type="button" class="btn btn-outline fin-oculto" id="btn-cancelar-previsao">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: EDITAR PERFIL ============ -->
+  <div id="modal-perfil-edicao" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-titulos"><h2>Editar operador</h2><p class="modal-sub" id="editpf-titulo"></p></div>
+        <button type="button" class="modal-close" id="modal-fechar-perfil-edicao" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <form id="form-perfil-edicao">
+        <div class="form-row">
+          <div class="field">
+            <label for="editpf-nome">Nome <span class="req">*</span></label>
+            <input type="text" id="editpf-nome" autocomplete="off" required>
+          </div>
+          <div class="field">
+            <label for="editpf-turno">Turno <span class="req">*</span></label>
+            <select id="editpf-turno" required>
+              <option value="1">Turno 1</option>
+              <option value="2">Turno 2</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="editpf-foto">Foto</label>
+            <input type="file" id="editpf-foto" accept="image/*">
+            <span class="hint">Opcional. Deixe vazio para manter a foto atual.</span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-block">Salvar alterações</button>
+          <button type="button" class="btn btn-outline fin-oculto" id="btn-cancelar-perfil-edicao">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: PERFIL OBRIGATÓRIO DO TURNO ============ -->
+  <div id="modal-perfil-turno-obrigatorio" class="modal-overlay">
+    <div class="modal turno-perfil-modal">
+      <div class="modal-header">
+        <h2 id="perfil-turno-obrigatorio-titulo">Identifique o operador do turno</h2>
+      </div>
+      <p id="perfil-turno-obrigatorio-info">Escolha quem está operando para continuar.</p>
+      <div class="field">
+        <label for="select-perfil-turno-obrigatorio">Operador <span class="req">*</span></label>
+        <select id="select-perfil-turno-obrigatorio" required aria-describedby="perfil-turno-obrigatorio-info">
+          <option value="">Selecionar operador</option>
+        </select>
+      </div>
+      <button type="button" class="btn btn-quiet btn-sm" id="btn-abrir-cadastro-operador" hidden>Não encontrou seu nome? Cadastrar operador</button>
+      <div id="perfil-turno-obrigatorio-cadastro" class="field" hidden>
+        <label for="perfil-turno-obrigatorio-nome">Seu nome</label>
+        <input type="text" id="perfil-turno-obrigatorio-nome" autocomplete="off" maxlength="80">
+        <span class="hint">Seu nome aparece nas recargas e vendas deste turno.</span>
+        <button type="button" class="btn btn-outline" id="btn-cadastrar-perfil-turno">Cadastrar operador</button>
+      </div>
+      <p id="perfil-turno-obrigatorio-sem-perfil" class="help" hidden>Nenhum perfil está disponível para este turno.</p>
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline" id="btn-perfil-turno-admin">Entrar como Admin</button>
+        <button type="button" class="btn btn-primary" id="btn-confirmar-perfil-turno">Confirmar operador</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ FOLHA: REPOR OU CORRIGIR ESTOQUE ============ -->
+  <div id="modal-repor" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-titulos"><h2 id="repor-titulo">Repor estoque</h2><p id="repor-sub" class="modal-sub"></p></div>
+        <button type="button" class="modal-close" data-fechar-modal="modal-repor" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <form id="form-repor" novalidate>
+        <div class="segmented" role="tablist" aria-label="O que fazer" id="repor-modos">
+          <button type="button" role="tab" aria-selected="true" data-modo="repor">Repor</button>
+          <button type="button" role="tab" aria-selected="false" data-modo="contagem">Corrigir contagem</button>
+          <button type="button" role="tab" aria-selected="false" data-modo="baixa" hidden>Registrar baixa</button>
+        </div>
+        <div class="estoque-agora" aria-live="polite">
+          <div><span>Agora</span><strong id="repor-agora">—</strong></div>
+          <div><span>Mínimo</span><strong id="repor-min">—</strong></div>
+          <div><span>Ideal</span><strong id="repor-ideal">—</strong></div>
+        </div>
+        <p class="aviso-estoque" id="repor-aviso" hidden>Esta variação ainda não foi contada. O que chegar agora vira o estoque inicial.</p>
+        <div class="field">
+          <label for="repor-qtd" id="repor-qtd-rotulo">Chegou</label>
+          <div class="stepper stepper-largo">
+            <button type="button" data-repor-delta="-1" aria-label="Menos uma unidade">−</button>
+            <input type="number" id="repor-qtd" inputmode="numeric" min="0" step="1" value="0">
+            <button type="button" data-repor-delta="1" aria-label="Mais uma unidade">+</button>
+          </div>
+          <div class="quick-values" id="repor-atalhos">
+            <button type="button" data-repor-soma="6">+6</button>
+            <button type="button" data-repor-soma="12">+12</button>
+            <button type="button" data-repor-soma="24">+24</button>
+            <button type="button" data-repor-sugestao id="repor-btn-sugestao">Sugestão</button>
+          </div>
+          <p class="help" id="repor-dica"></p>
+        </div>
+        <div class="field" id="repor-motivo-campo" hidden>
+          <label for="repor-motivo">Motivo da diferença</label>
+          <select id="repor-motivo"><option value="ajuste">Ajuste de contagem</option><option value="perda">Perda</option><option value="vencido">Vencido</option></select>
+        </div>
+        <div class="resultado-estoque" id="repor-resultado"><span id="repor-resultado-rotulo">Fica com</span><strong id="repor-resultado-valor">—</strong></div>
+        <div class="form-actions"><button type="submit" class="btn btn-primary btn-block" id="btn-repor-salvar">Repor</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ FOLHA: REPOR FALTANTES EM LOTE ============ -->
+  <div id="modal-repor-lote" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-titulos"><h2>Repor faltantes</h2><p class="modal-sub">Confira o que chegou. Zere o que não veio.</p></div>
+        <button type="button" class="modal-close" data-fechar-modal="modal-repor-lote" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <form id="form-repor-lote" novalidate>
+        <div class="card list-surface lote-itens" id="lote-itens"></div>
+        <div class="form-actions"><div class="total"><small id="lote-resumo"></small><strong id="lote-total">0 un</strong></div><button type="submit" class="btn btn-primary" id="btn-lote-salvar">Salvar reposição</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: EDITAR MODELO ============ -->
+  <div id="modal-modelo-edicao" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-titulos"><h2>Editar modelo</h2><p class="modal-sub" id="editm-titulo"></p></div>
+        <button type="button" class="modal-close" id="modal-fechar-modelo" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <form id="form-modelo-edicao">
+        <div class="form-row">
+          <div class="field">
+            <label for="editm-nome">Modelo <span class="req">*</span></label>
+            <input type="text" id="editm-nome" autocomplete="off" required>
+          </div>
+          <div class="field">
+            <label for="editm-marca">Marca <span class="req">*</span></label>
+            <input type="text" id="editm-marca" autocomplete="off" required>
+          </div>
+          <div class="field">
+            <label for="editm-potencia-max">Potência máxima (kW) <span class="req">*</span></label>
+            <input type="number" id="editm-potencia-max" min="1" step="1" required>
+          </div>
+          <div class="field">
+            <label for="editm-media">Média real (kW) <span class="req">*</span></label>
+            <input type="number" id="editm-media" min="1" step="1" required>
+          </div>
+          <div class="field">
+            <label for="editm-capacidade">Bateria (kWh) <span class="req">*</span></label>
+            <input type="number" id="editm-capacidade" min="1" step="0.1" required>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-block">Salvar alterações</button>
+          <button type="button" class="btn btn-outline fin-oculto" id="btn-cancelar-modelo-edicao">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: EDITAR VENDA ============ -->
+  <div id="modal-venda-edicao" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-titulos"><h2>Editar venda</h2><p class="modal-sub" id="editv-titulo"></p></div>
+        <button type="button" class="modal-close" id="modal-fechar-venda" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <form id="form-venda-edicao">
+        <input type="hidden" id="editv-cedulas-recebidas"><input type="hidden" id="editv-moedas-recebidas"><input type="hidden" id="editv-cedulas-troco"><input type="hidden" id="editv-moedas-troco">
+        <div class="form-row">
+          <div class="field">
+            <label for="editv-data">Data e hora <span class="req">*</span></label>
+            <input type="datetime-local" id="editv-data" required>
+          </div>
+          <div class="field">
+            <label for="editv-produto">Produto <span class="req">*</span></label>
+            <select id="editv-produto" required></select>
+            <span class="hint">Vendas antigas mantêm o preço da época.</span>
+          </div>
+          <div class="field">
+            <label for="editv-qtd">Quantidade <span class="req">*</span></label>
+            <input type="number" id="editv-qtd" min="1" step="1" required>
+          </div>
+          <div class="field">
+            <label for="editv-metodo">Pagamento <span class="req">*</span></label>
+            <select id="editv-metodo" required>
+              <option value="Pix">Pix</option>
+              <option value="Dinheiro">Dinheiro</option>
+              <option value="Crédito">Crédito</option>
+              <option value="Débito">Débito</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="editv-total">Valor total</label>
+            <input type="text" id="editv-total" class="calc-result" readonly>
+          </div>
+        </div>
+        <div class="edicao-acoes-registro">
+          <button type="button" class="btn btn-outline" id="btn-editv-desfazer" data-desfazer-venda="">Desfazer venda</button>
+          <button type="button" class="btn btn-outline btn-danger-outline" id="btn-editv-excluir" data-remover-venda="">Excluir venda</button>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-block">Salvar alterações</button>
+          <button type="button" class="btn btn-outline fin-oculto" id="btn-cancelar-venda-edicao">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-venda-pendente" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-titulos"><h2>Registrar consumo</h2><p class="modal-sub" id="pend-titulo"></p></div>
+        <button type="button" class="modal-close" id="modal-fechar-pend" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <form id="form-venda-pendente">
+        <div class="form-row">
+          <div class="field">
+            <label for="pend-produto">Produto <span class="req">*</span></label>
+            <select id="pend-produto" required>
+              <option value="">Selecione o produto...</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="pend-qtd">Quantidade <span class="req">*</span></label>
+            <input type="number" id="pend-qtd" min="1" step="1" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="pend-metodo">Pagamento <span class="req">*</span></label>
+            <select id="pend-metodo" required>
+              <option value="Pix" selected>Pix</option>
+              <option value="Dinheiro">Dinheiro</option>
+              <option value="Crédito">Crédito</option>
+              <option value="Débito">Débito</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="pend-total">Valor total</label>
+            <input type="text" id="pend-total" class="calc-result" readonly placeholder="R$ 0,00">
+          </div>
+        </div>
+        <div class="field" id="campo-pend-dinheiro" style="display:none;"><label>Recebido em dinheiro <span class="req">*</span></label><div class="cash-breakdown"><input type="text" class="currency-input" id="pend-cedulas-recebidas" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"><input type="text" class="currency-input" id="pend-moedas-recebidas" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"></div><label>Troco a devolver</label><div class="cash-breakdown"><input type="text" class="currency-input" id="pend-cedulas-troco" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"><input type="text" class="currency-input" id="pend-moedas-troco" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"></div></div>
+        <p class="resumo-folha" id="pend-resumo"></p>
+        <div class="form-actions">
+          <button type="button" class="btn btn-quiet btn-descartar" id="btn-descartar-pend">Descartar</button>
+          <button type="submit" class="btn btn-primary">Registrar venda</button>
+          <button type="button" class="btn btn-outline fin-oculto" id="btn-cancelar-pend">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ ABA 0: EM ANDAMENTO ============ -->
+  <section id="tab-dashboard" class="tab-panel dashboard-panel">
+    <div class="operation-head"><div><h2>Dashboard</h2><p class="operation-lede" id="dash-sub">Hoje</p></div></div>
+    <div class="segmented" role="tablist" aria-label="Tipo de dashboard" data-segmented id="dash-abas">
+      <button type="button" role="tab" aria-selected="true" aria-controls="dash-operacao" id="seg-dash-operacao">Operação</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="dash-produtos" id="seg-dash-produtos">Produtos</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="dash-pista" id="seg-dash-pista">Pista</button>
+    </div>
+    <div class="dash-toolbar">
+      <div class="chip-row">
+        <div class="chips" id="dash-periodos" role="group" aria-label="Período">
+          <button type="button" class="chip" data-dash-periodo="turno" aria-pressed="false">Turno atual</button>
+          <button type="button" class="chip" data-dash-periodo="dia" aria-pressed="true">Hoje</button>
+          <button type="button" class="chip" data-dash-periodo="semana" aria-pressed="false">Semana</button>
+          <button type="button" class="chip" data-dash-periodo="mes" aria-pressed="false">Mês</button>
+          <button type="button" class="chip" data-dash-periodo="personalizado" aria-pressed="false">Datas</button>
+        </div>
+        <button type="button" class="chip filter-btn" id="btn-dash-filtros"><svg aria-hidden="true"><use href="#i-sliders"/></svg>Filtros<span class="count" id="dash-filtros-n" hidden></span></button>
+      </div>
+      <div class="dash-ativos" id="dash-ativos"></div>
+      <p class="dash-compara" id="dash-compara"></p>
+    </div>
+    <div id="dash-operacao" class="seg-panel" role="tabpanel" aria-labelledby="seg-dash-operacao"></div>
+    <div id="dash-produtos" class="seg-panel" role="tabpanel" aria-labelledby="seg-dash-produtos" hidden></div>
+    <div id="dash-pista" class="seg-panel" role="tabpanel" aria-labelledby="seg-dash-pista" hidden></div>
+  </section>
+
+  <!-- ============ FOLHA: FILTROS DOS DASHBOARDS ============ -->
+  <div id="modal-dash-filtros" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-titulos"><h2>Filtros</h2><p class="modal-sub">Valem para os dois dashboards e para a comparação</p></div>
+        <button type="button" class="modal-close" data-fechar-modal="modal-dash-filtros" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <form id="form-dash-filtros" class="dash-filtros-form" novalidate>
+        <div class="form-row filtros-datas" id="dash-f-datas" hidden>
+          <div class="field"><label for="dash-f-de">De</label><input type="date" id="dash-f-de"></div>
+          <div class="field"><label for="dash-f-ate">Até</label><input type="date" id="dash-f-ate"></div>
+        </div>
+        <div class="field"><label for="dash-f-turno">Turno</label><select id="dash-f-turno"><option value="">Todos</option><option value="1">Turno 1</option><option value="2">Turno 2</option></select></div>
+        <div class="field"><label for="dash-f-operador">Operador</label><select id="dash-f-operador"><option value="">Todos</option></select></div>
+        <div class="field"><label for="dash-f-pagamento">Pagamento</label><select id="dash-f-pagamento"><option value="">Todos</option><option value="Pix">Pix</option><option value="Dinheiro">Dinheiro</option><option value="Crédito">Crédito</option><option value="Débito">Débito</option><option value="Pendente">Pendente</option></select></div>
+        <p class="help">Operação agora, Caixa físico e Estoque mostram o momento atual e não mudam com os filtros.</p>
+        <div class="form-actions"><button type="button" class="btn btn-outline" id="btn-dash-limpar">Limpar</button><button type="submit" class="btn btn-primary">Mostrar resultados</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ FOLHA: DETALHE DO RANKING ============ -->
+  <div id="modal-dash-detalhe" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-titulos"><h2 id="dash-detalhe-titulo">Produto</h2><p class="modal-sub" id="dash-detalhe-sub"></p></div>
+        <button type="button" class="modal-close" data-fechar-modal="modal-dash-detalhe" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <div id="dash-detalhe-corpo" class="dash-detalhe-corpo"></div>
+      <div class="form-actions" id="dash-detalhe-acoes" hidden><button type="button" class="btn btn-primary btn-block" id="btn-dash-detalhe-repor">Repor</button></div>
+    </div>
+  </div>
+  <div class="chart-tip" id="dash-tip" role="status" hidden></div>
+
+  <!-- ============ ANÁLISE (módulos em src/analise/) ============ -->
+  <section id="tab-analise" class="tab-panel analise-panel" aria-label="Análise"></section>
+
+  <section id="tab-andamento" class="tab-panel active">
+    <div class="operation-head">
+      <div>
+        <h2>Operação</h2>
+        <p class="operation-lede" id="op-data"></p>
+      </div>
+      <div class="operation-actions">
+        <button type="button" class="btn btn-outline btn-icon" id="btn-abrir-whatsapp" title="Mensagem para o WhatsApp" aria-label="Mensagem para o WhatsApp"><svg aria-hidden="true"><use href="#i-share"/></svg></button>
+        <button type="button" class="btn btn-outline btn-icon" id="btn-ver-caixa" title="Ver caixa" aria-label="Ver caixa"><svg aria-hidden="true"><use href="#i-wallet"/></svg></button>
+        <button type="button" class="btn btn-outline" id="btn-fechar-turno">Fechar turno</button>
+      </div>
+    </div>
+    <div class="operation-stats" aria-label="Resumo da operação">
+      <div class="operation-stat stat-livres"><strong id="op-stat-livres">0</strong><span>livres</span><small id="op-stat-livres-info">Disponíveis agora</small></div>
+      <div class="operation-stat"><strong id="op-stat-ativas">0</strong><span>carregando</span><small id="op-stat-ativas-info">Nenhuma sessão em curso</small></div>
+      <div class="operation-stat"><strong id="op-stat-fila">0</strong><span>na fila</span><small id="op-stat-fila-info">Sem espera</small></div>
+      <div class="operation-stat stat-pagamentos"><strong id="op-stat-pagamentos">0</strong><span>a receber</span><small id="op-stat-pagamentos-info">Tudo em dia</small></div>
+    </div>
+    <div class="charger-surface">
+      <h3 class="sr-only">Bicos de recarga</h3>
+      <span class="sr-only" id="status-operacao-bicos" role="status">Operação normal</span>
+      <span id="qtd-fila-iniciar" hidden>0 aguardando</span>
+      <div id="status-bicos-iniciar" class="bico-grid"></div>
+    </div>
+
+    <div class="op-section-title"><h2>Pendências</h2></div>
+    <div class="pendencias">
+      <div class="operation-feed-card operation-payment-card">
+        <div class="operation-feed-head"><h3>Pagamentos a receber</h3><span class="operation-feed-status danger" id="qtd-pendentes">0 pendentes</span></div>
+        <div id="lista-pendentes" class="pend-list"></div>
+      </div>
+      <div class="operation-feed-card operation-consumption-card">
+        <div class="operation-feed-head"><h3>Consumos para registrar</h3><span class="operation-feed-status warning" id="qtd-vendas-pendentes">0 aguardando</span></div>
+        <div id="aviso-sem-pendentes" style="display:none;" class="empty-state operation-feed-empty">
+        <strong>Nenhum consumo pendente</strong>
+        Consumos marcados na finalização do abastecimento aparecem aqui para virar venda.
+      </div>
+      <div id="lista-vendas-pendentes" class="pend-list"></div>
+      </div>
+    </div>
+
+    <div class="op-section-title"><h2>Sessões e fila</h2><span class="operation-sessions-count" id="qtd-sessoes">0 ativas</span></div>
+    <div class="card operation-sessions">
+      <div id="lista-sessoes"></div>
+    </div>
+  </section>
+
+  <!-- ============ FOLHA: INICIAR RECARGA ============ -->
+  <div id="modal-iniciar" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="iniciar-titulo">Iniciar recarga</h2>
+        <button type="button" class="modal-close" id="modal-fechar-iniciar" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <div id="start-form">
+      <div id="aviso-sem-clientes" style="display:none;" class="alert error">
+        Nenhum carro cadastrado ainda. Cadastre o cliente em <strong>Cadastros</strong> antes de iniciar uma recarga.
+      </div>
+      <form id="form-iniciar">
+        <div id="aviso-bicos-ocupados" class="alert error" style="display:none;">
+          Todos os bicos estão ocupados. O carro entra na fila e você informa a bateria quando a vaga liberar.
+        </div>
+        <div id="aviso-conectado" class="alert success" style="display:none;">
+          <span id="aviso-conectado-texto">Bico livre</span>
+        </div>
+        <div class="form-row start-recharge-grid">
+          <div class="field combobox-wrapper">
+            <label for="select-placa">Veículo <span class="req">*</span></label>
+            <div class="combobox">
+              <input type="text" id="select-placa" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="select-placa-dropdown" autocomplete="off" placeholder="Digite para buscar (placa, nome, modelo)..." required>
+              <input type="hidden" id="select-placa-value" name="select-placa-value">
+              <div class="combobox-dropdown" id="select-placa-dropdown" role="listbox" aria-label="Sugestões de placas"></div>
+              <span class="combobox-arrow">▾</span>
+            </div>
+            <span class="hint">Busque por placa, cliente ou modelo.</span>
+          </div>
+          <div class="ini-placa-nova" id="ini-placa-nova" hidden>
+            <p class="resumo-folha">Placa nova. Informe o que souber; o modelo ajuda a calcular o tempo.</p>
+            <div class="field"><label for="ini-novo-nome">Nome do cliente <span class="opt">(opcional)</span></label><input type="text" id="ini-novo-nome" autocomplete="off" placeholder="Cliente avulso"></div>
+            <div class="field"><label for="ini-novo-modelo">Modelo</label><select id="ini-novo-modelo"></select></div>
+            <div class="toggle-row"><span id="ini-novo-salvar-rotulo">Salvar no cadastro de clientes</span><button type="button" class="switch" role="switch" aria-checked="true" aria-labelledby="ini-novo-salvar-rotulo" id="ini-novo-salvar"></button></div>
+          </div>
+          <div class="field start-auto-field">
+            <label for="auto-nome">Nome do Cliente</label>
+            <input type="text" id="auto-nome" readonly placeholder="—">
+          </div>
+          <div class="field start-auto-field">
+            <label for="auto-modelo">Modelo do Carro</label>
+            <input type="text" id="auto-modelo" readonly placeholder="—">
+          </div>
+          <div class="field">
+            <label for="bico-utilizado">Bico utilizado <span class="req">*</span></label>
+            <select id="bico-utilizado" required></select>
+            <span class="hint" id="bico-potencia-hint">Selecione um bico disponível</span>
+          </div>
+        </div>
+        <div class="form-row start-recharge-grid" id="campos-recarga">
+          <div class="field">
+            <label for="bateria-inicial">Bateria agora (%) <span class="req">*</span></label>
+            <input type="number" id="bateria-inicial" min="0" max="100" step="1" placeholder="Ex: 20" required>
+            <div class="quick-values" data-quick-for="bateria-inicial"><button type="button" data-value="10">10%</button><button type="button" data-value="20">20%</button><button type="button" data-value="30">30%</button><button type="button" data-value="40">40%</button></div>
+          </div>
+          <div class="field">
+            <label for="bateria-alvo">Carregar até (%) <span class="req">*</span></label>
+            <input type="number" id="bateria-alvo" min="0" max="100" step="1" placeholder="Ex: 90" required>
+            <div class="quick-values" data-quick-for="bateria-alvo"><button type="button" data-value="80">80%</button><button type="button" data-value="90">90%</button><button type="button" data-value="100">100%</button></div>
+          </div>
+          <div class="field">
+            <label for="tempo-estimado">Tempo estimado (min) <span class="req">*</span></label>
+            <input type="number" id="tempo-estimado" min="1" max="1440" step="1" placeholder="Ex: 60" required>
+            <span class="hint">Calculado pelo modelo do carro e pela potência do bico. Você pode ajustar.</span>
+          </div>
+          <div class="field">
+            <label for="valor-parada">Parar num valor em reais <span class="opt">(opcional)</span></label>
+            <input type="text" class="currency-input" id="valor-parada" inputmode="numeric" placeholder="R$ 60,00" autocomplete="off">
+            <span class="hint">Ajuda a conferir o kWh exato para atingir o valor desejado.</span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="btn-iniciar-submit"><span class="start-action-icon" aria-hidden="true">⚡</span> Iniciar abastecimento</button>
+          <button type="button" class="btn btn-outline" id="btn-entrar-fila">Entrar na fila</button>
+        </div>
+      </form>
+    </div>
+    </div>
+  </div>
+
+  <!-- ============ FOLHA: MENSAGENS DO WHATSAPP ============ -->
+  <div id="modal-whatsapp" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Mensagem para o WhatsApp</h2>
+        <button type="button" class="modal-close" id="modal-fechar-whatsapp" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <p class="hint">Status atual dos bicos, pronto para enviar.</p>
+      <pre class="wp-preview" id="preview-whatsapp"></pre>
+      <div class="form-actions share-status-actions">
+          <button type="button" class="btn btn-primary" id="btn-whatsapp">Enviar status dos bicos</button>
+          <button type="button" class="btn btn-outline" id="btn-whatsapp-abertura">Abertura</button>
+          <button type="button" class="btn btn-outline" id="btn-whatsapp-fechamento">Encerramento</button>
+        </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: REGISTRAR PAGAMENTO ============ -->
+  <div id="modal-pagamento" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-titulos"><h2>Receber pagamento</h2><p class="modal-sub" id="pag-titulo"></p></div>
+        <button type="button" class="modal-close" id="modal-fechar-pagamento" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <p class="resumo-folha" id="pag-info"></p>
+      <form id="form-pagamento">
+        <div class="form-row">
+          <div class="field">
+            <label for="pag-metodo">Pagamento <span class="req">*</span></label>
+            <select id="pag-metodo" required>
+              <option value="Pix" selected>Pix</option>
+              <option value="Dinheiro">Dinheiro</option>
+              <option value="Crédito">Crédito</option>
+              <option value="Débito">Débito</option>
+              <option value="Cortesia">Cortesia</option>
+            </select>
+          </div>
+          <div class="field" id="campo-pag-dinheiro" style="display:none;"><label>Recebido em dinheiro <span class="req">*</span></label><div class="cash-breakdown"><input type="text" class="currency-input" id="pag-cedulas-recebidas" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"><input type="text" class="currency-input" id="pag-moedas-recebidas" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"></div><input type="hidden" id="pag-valor-entregue"><span class="hint">Informe como o cliente pagou fisicamente.</span></div>
+          <div class="field" id="campo-pag-troco" style="display:none;"><label>Troco devolvido (opcional)</label><div class="cash-breakdown"><input type="text" class="currency-input" id="pag-cedulas-troco" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"><input type="text" class="currency-input" id="pag-moedas-troco" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"></div><input type="text" id="pag-troco" class="calc-result" readonly placeholder="Troco sugerido"></div>
+          <div class="field">
+            <label>Pagamento dividido em mais de um método?</label>
+            <div class="radio-group">
+              <label class="radio-opt"><input type="radio" name="pag-pag-div" value="Não" checked> Não</label>
+              <label class="radio-opt"><input type="radio" name="pag-pag-div" value="Sim"> Sim</label>
+            </div>
+          </div>
+        </div>
+        <div class="split-area" id="campo-pag-divisao" style="display:none;">
+          <label class="split-label">Parcelas do pagamento</label>
+          <div id="pag-divisao-lista" class="split-rows"></div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px;">
+            <button type="button" class="btn btn-quiet btn-sm" id="btn-add-pag-divisao">Adicionar método</button>
+            <span id="soma-pag-divisao" class="split-sum"></span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-block">Confirmar pagamento</button>
+          <button type="button" class="btn btn-outline fin-oculto" id="btn-cancelar-pagamento">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ ABA 1: CADASTRO DE CLIENTES, CARROS E PRODUTOS ============ -->
+  <section id="tab-cadastro" class="tab-panel cadastro-panel">
+    <div class="cadastro-page-head">
+      <div><h1>Cadastros</h1><p class="cadastro-lede">Clientes, carros e produtos</p></div>
+      <div class="cadastro-list-actions"><button type="button" class="btn btn-primary" id="btn-novo-cadastro"><svg aria-hidden="true"><use href="#i-plus"/></svg><span id="btn-novo-cadastro-rotulo">Novo cliente</span></button></div>
+    </div>
+    <div class="segmented" role="tablist" aria-label="Tipo de cadastro" data-segmented id="cad-segmentos"><button type="button" role="tab" aria-selected="true" aria-controls="cad-clientes" id="seg-cad-clientes" data-novo="cliente">Clientes</button><button type="button" role="tab" aria-selected="false" aria-controls="cad-modelos" id="seg-cad-modelos" data-novo="modelo">Modelos</button><button type="button" role="tab" aria-selected="false" aria-controls="cad-produtos" id="seg-cad-produtos" data-novo="produto">Produtos</button><button type="button" role="tab" aria-selected="false" aria-controls="cad-combos" id="seg-cad-combos" data-novo="combo">Combos</button></div>
+    <div id="cad-clientes" class="seg-panel" role="tabpanel" aria-labelledby="seg-cad-clientes">
+      <div class="toolbar toolbar-row">
+        <label class="search"><svg aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">Buscar clientes</span><input type="search" id="busca-clientes" placeholder="Buscar cliente, placa ou modelo" autocomplete="off"></label>
+        <p class="cad-count" id="qtd-clientes">0 veículos</p>
+      </div>
+      <div class="card list-surface"><div id="lista-clientes" class="cadastro-data-list"></div></div>
+    </div>
+    <div id="cad-modelos" class="seg-panel" role="tabpanel" aria-labelledby="seg-cad-modelos" hidden>
+      <div class="toolbar toolbar-row">
+        <label class="search"><svg aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">Buscar modelos</span><input type="search" id="busca-modelos" placeholder="Buscar modelo ou marca" autocomplete="off"></label>
+        <p class="cad-count" id="qtd-modelos">0 modelos</p>
+      </div>
+      <div class="card list-surface"><div id="lista-modelos" class="cadastro-data-list"></div></div>
+    </div>
+    <div id="cad-produtos" class="seg-panel" role="tabpanel" aria-labelledby="seg-cad-produtos" hidden>
+      <div class="estoque-toolbar">
+        <label class="search"><svg aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">Buscar produtos</span><input type="search" id="busca-produtos" placeholder="Buscar produto ou variação" autocomplete="off"></label>
+        <div class="chips estoque-chips" id="estoque-chips-cad" role="group" aria-label="Situação do estoque"></div>
+      </div>
+      <div id="lista-produtos" class="estoque-lista"></div>
+    </div>
+    <div id="cad-combos" class="seg-panel" role="tabpanel" aria-labelledby="seg-cad-combos" hidden>
+      <div class="toolbar toolbar-row">
+        <label class="search"><svg aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">Buscar combos</span><input type="search" id="busca-combos" placeholder="Buscar combo ou item" autocomplete="off"></label>
+        <p class="cad-count" id="qtd-combos">0 combos</p>
+      </div>
+      <div class="card list-surface"><div id="lista-combos" class="cadastro-data-list"></div></div>
+    </div>
+  </section>
+
+  <!-- ============ FOLHAS DE CADASTRO ============ -->
+  <div id="modal-cad-clientes" class="modal-overlay" data-cadastro-folha="cliente">
+    <div class="modal">
+      <div class="modal-header"><h2>Novo cliente</h2><button type="button" class="modal-close" data-fechar-modal="modal-cad-clientes" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <form id="form-cliente">
+            <div class="form-row cadastro-form-grid">
+              <div class="field"><label for="placa">Placa <span class="req">*</span></label><input type="text" id="placa" placeholder="ABC1D23" maxlength="8" autocomplete="off" required><span class="hint">Padrão Mercosul, como ABC1D23.</span></div>
+              <div class="field"><label for="nome-cliente">Nome do cliente <span class="req">*</span></label><input type="text" id="nome-cliente" placeholder="Nome completo" autocomplete="off" required></div>
+              <div class="field"><label for="modelo">Modelo <span class="req">*</span></label><select id="modelo" required><option value="">Selecione ou digite...</option></select><span class="hint">O modelo define a bateria usada no tempo estimado. Escolha Outro para digitar.</span></div>
+            </div>
+            <div class="form-actions"><button type="submit" class="btn btn-primary">Salvar cadastro</button></div>
+          </form>
+    </div>
+  </div>
+  <div id="modal-cad-modelos" class="modal-overlay" data-cadastro-folha="modelo">
+    <div class="modal">
+      <div class="modal-header"><h2>Novo modelo</h2><button type="button" class="modal-close" data-fechar-modal="modal-cad-modelos" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <form id="form-modelo">
+        <div class="form-row">
+          <div class="field">
+            <label for="mod-nome">Modelo <span class="req">*</span></label>
+            <input type="text" id="mod-nome" placeholder="Ex: Dolphin, Model 3..." autocomplete="off" required>
+          </div>
+          <div class="field">
+            <label for="mod-marca">Marca <span class="req">*</span></label>
+            <input type="text" id="mod-marca" placeholder="Ex: BYD, Tesla..." autocomplete="off" required>
+          </div>
+          <div class="field">
+            <label for="mod-potencia-max">Potência máxima (kW) <span class="opt">(opcional)</span></label>
+            <input type="number" id="mod-potencia-max" min="1" step="1" inputmode="numeric" placeholder="Ex: 80">
+            <span class="hint">Pico que o carro aceita em carga rápida.</span>
+          </div>
+          <div class="field">
+            <label for="mod-media">Média real (kW) <span class="opt">(opcional)</span></label>
+            <input type="number" id="mod-media" min="1" step="1" inputmode="numeric" placeholder="Ex: 60">
+            <span class="hint">O que ele costuma puxar aqui no posto.</span>
+          </div>
+          <div class="field">
+            <label for="mod-capacidade">Bateria (kWh) <span class="req">*</span></label>
+            <input type="number" id="mod-capacidade" min="1" step="0.1" placeholder="Ex: 60" required>
+            <span class="hint">Capacidade total, na ficha técnica do carro.</span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-block">Salvar modelo</button>
+        </div>
+          </form>
+    </div>
+  </div>
+  <div id="modal-cad-produtos" class="modal-overlay" data-cadastro-folha="produto">
+    <div class="modal">
+      <div class="modal-header"><h2 id="prod-folha-titulo">Novo produto</h2><button type="button" class="modal-close" data-fechar-modal="modal-cad-produtos" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <form id="form-produto" novalidate>
+        <div class="field">
+          <label for="prod-nome">Nome do produto <span class="req">*</span></label>
+          <input type="text" id="prod-nome" placeholder="Ex.: Refrigerante" autocomplete="off" required>
+        </div>
+        <div class="field">
+          <label for="prod-categoria">Categoria <span class="req">*</span></label>
+          <input type="text" id="prod-categoria" list="lista-categorias" placeholder="Ex.: Bebidas" autocomplete="off" required>
+          <div class="chips cat-chips" id="prod-cat-atalhos" role="group" aria-label="Categorias já usadas"></div>
+        </div>
+        <section class="folha-secao">
+          <h3 id="prod-variacoes-titulo">Preço e estoque</h3>
+          <p class="help">Preço R$ 0,00 marca o item como uso interno: fica no estoque, mas não é vendido.</p>
+          <div id="prod-variacoes" class="prod-variacoes"></div>
+          <button type="button" class="btn btn-quiet btn-sm" id="btn-add-variacao"><svg aria-hidden="true" class="icon-inline"><use href="#i-plus"/></svg>Adicionar variação</button>
+          <p class="help" id="prod-variacoes-dica">Tem tamanhos ou sabores diferentes? Adicione uma variação.</p>
+        </section>
+        <section class="folha-secao" id="prod-movimentos-secao" hidden>
+          <h3>Movimentos de estoque</h3>
+          <div id="prod-movimentos"></div>
+        </section>
+        <button type="button" class="btn btn-quiet btn-sm btn-excluir-produto" id="btn-excluir-produto" hidden>Excluir produto</button>
+        <div class="form-actions"><button type="submit" class="btn btn-primary btn-block" id="btn-salvar-produto">Salvar produto</button></div>
+      </form>
+      <datalist id="lista-categorias"></datalist>
+    </div>
+  </div>
+  <div id="modal-cad-combos" class="modal-overlay" data-cadastro-folha="combo">
+    <div class="modal">
+      <div class="modal-header"><h2 id="combo-titulo">Novo combo</h2><button type="button" class="modal-close" data-fechar-modal="modal-cad-combos" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <form id="form-combo">
+            <div class="form-row"><div class="field"><label for="combo-nome">Nome do combo <span class="req">*</span></label><input type="text" id="combo-nome" placeholder="Ex: Combo 01" autocomplete="off" required></div><div class="field"><label for="combo-valor">Preço do combo <span class="req">*</span></label><input type="text" class="currency-input" id="combo-valor" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off" required></div></div>
+            <div id="combo-grupos" class="split-rows"></div>
+            <div class="form-actions"><button type="button" class="btn btn-outline" id="btn-add-combo-grupo">Adicionar grupo</button><button type="button" class="btn btn-outline" id="btn-cancelar-combo-edicao" style="display:none;">Cancelar edição</button><button type="submit" class="btn btn-primary" id="btn-salvar-combo">Salvar combo</button></div>
+          </form>
+    </div>
+  </div>
+
+  <!-- ============ ABA 2: VENDAS ============ -->
+  <section id="tab-vendas" class="tab-panel sales-panel">
+    <div class="sales-page-head"><div><h1>Vendas</h1><p class="sales-lede">Conveniência do posto</p></div></div>
+    <div class="segmented" role="tablist" aria-label="Seções de vendas" data-segmented>
+      <button type="button" role="tab" aria-selected="true" aria-controls="vendas-vender" id="seg-vendas-vender">Vender</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="vendas-historico" id="seg-vendas-historico">Histórico</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="vendas-estoque" id="seg-vendas-estoque">Estoque</button>
+    </div>
+
+    <div id="vendas-vender" class="seg-panel" role="tabpanel" aria-labelledby="seg-vendas-vender">
+      <div id="aviso-sem-produtos" style="display:none;" class="alert error">Nenhum produto cadastrado ainda. Cadastre produtos antes de registrar uma venda.</div>
+      <div class="sales-layout">
+        <div>
+          <div class="toolbar">
+            <label class="search"><svg aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">Buscar produto</span><input type="search" id="busca-produtos-venda" placeholder="Buscar produto" autocomplete="off"></label>
+            <div class="chips" id="categorias-venda" role="group" aria-label="Categorias"></div>
+          </div>
+          <div class="products" id="grade-produtos"></div>
+        </div>
+        <aside class="cart-bar is-empty" id="carrinho-barra" aria-label="Carrinho">
+          <div class="cart-info"><small id="carrinho-resumo">Carrinho vazio</small><strong id="carrinho-total">R$ 0,00</strong></div>
+          <div class="cart-lines" id="carrinho-linhas"></div>
+          <button type="button" class="btn btn-primary" id="btn-cobrar" disabled>Cobrar</button>
+        </aside>
+      </div>
+    </div>
+
+    <div id="vendas-historico" class="seg-panel" role="tabpanel" aria-labelledby="seg-vendas-historico" hidden>
+      <div class="sales-stats">
+      <div class="sales-stat"><span>Vendas</span><strong id="stat-vendas-qtd">0</strong><small>No filtro atual</small></div>
+      <div class="sales-stat"><span>Itens vendidos</span><strong id="stat-vendas-itens">0</strong><small>Unidades</small></div>
+      <div class="sales-stat"><span>Faturamento</span><strong id="stat-vendas-total">R$ 0,00</strong><small>Período filtrado</small></div>
+      <div class="sales-stat attention"><span>Estoque baixo</span><strong id="stat-vendas-baixo">0</strong><small>Acompanhar reposição</small></div>
+    </div>
+      <div class="sales-filters"><input type="search" id="busca-vendas" placeholder="Buscar produto ou pagamento" autocomplete="off"><input type="date" id="filtro-vendas-de" aria-label="Vendas de"><input type="date" id="filtro-vendas-ate" aria-label="Vendas até"><select id="filtro-vendas-pagamento" aria-label="Filtrar por pagamento"><option value="">Todos os pagamentos</option><option value="Pix">Pix</option><option value="Dinheiro">Dinheiro</option><option value="Crédito">Crédito</option><option value="Débito">Débito</option></select><select id="filtro-vendas-turno" aria-label="Filtrar por turno"><option value="">Todos os turnos</option><option value="1">Turno 1</option><option value="2">Turno 2</option></select><select id="filtro-vendas-operador" aria-label="Filtrar por operador"><option value="">Todos os operadores</option></select><input type="date" id="data-relatorio-vendas" aria-label="Data do relatório"><button type="button" class="btn btn-primary" id="btn-compartilhar-vendas">Compartilhar relatório</button><button type="button" class="btn btn-outline" id="btn-limpar-filtro-vendas">Limpar filtros</button></div>
+      <div class="card list-surface">
+        <div id="lista-vendas" class="sales-data-list"></div>
+        <div id="empty-vendas" class="empty-state sales-empty"><strong>Nenhuma venda no filtro atual</strong>Registre uma venda para começar o histórico da conveniência.</div>
+      </div>
+    </div>
+
+    <div id="vendas-estoque" class="seg-panel" role="tabpanel" aria-labelledby="seg-vendas-estoque" hidden>
+      <div class="estoque-toolbar">
+        <div class="toolbar-row">
+          <label class="search"><svg aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">Buscar no estoque</span><input type="search" id="busca-estoque" placeholder="Buscar produto ou variação" autocomplete="off"></label>
+          <button type="button" class="btn btn-outline" id="btn-compartilhar-estoque"><svg aria-hidden="true"><use href="#i-share"/></svg><span class="label-wide">Enviar inventário</span></button>
+        </div>
+        <div class="chips estoque-chips" id="estoque-chips-venda" role="group" aria-label="Situação do estoque"></div>
+      </div>
+      <div id="lista-estoque" class="estoque-lista"></div>
+    </div>
+  </section>
+
+  <!-- ============ FOLHA: COBRAR VENDA ============ -->
+  <div id="modal-venda" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Cobrar venda</h2>
+        <button type="button" class="modal-close" id="modal-fechar-cobranca" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <form id="form-venda">
+        <div class="venda-produto-unico" hidden>
+          <div class="field combobox-wrapper"><label for="select-produto">Produto e subproduto <span class="req">*</span></label><div class="combobox"><input type="text" id="select-produto" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="select-produto-dropdown" autocomplete="off" placeholder="Selecione um produto"><input type="hidden" id="select-produto-value" name="select-produto-value"><div class="combobox-dropdown" id="select-produto-dropdown" role="listbox" aria-label="Subprodutos disponíveis"></div><span class="combobox-arrow">▾</span></div><span class="hint" id="hint-produto">Estoque disponível: —</span></div>
+          <div class="field"><label for="venda-qtd">Quantidade <span class="req">*</span></label><input type="number" id="venda-qtd" min="1" step="1" value="1" required></div>
+        </div>
+        <div class="card list-surface carrinho-itens" id="carrinho-itens"></div>
+        <div class="field"><label for="venda-metodo">Pagamento <span class="req">*</span></label><select id="venda-metodo" required><option value="Pix" selected>Pix</option><option value="Dinheiro">Dinheiro</option><option value="Crédito">Crédito</option><option value="Débito">Débito</option><option value="Pendente">Pendente</option></select><span class="hint">Pendente reserva o estoque até a confirmação do pagamento.</span></div>
+        <div class="field" id="campo-venda-recarga" style="display:none;"><label for="venda-recarga">Vincular à recarga</label><select id="venda-recarga"><option value="">Venda avulsa</option></select><span class="hint">O valor será incluído ao finalizar a recarga selecionada.</span></div>
+        <div class="field" id="campo-venda-dinheiro" style="display:none;"><label>Recebido em dinheiro <span class="req">*</span></label><div class="cash-breakdown"><input type="text" class="currency-input" id="venda-cedulas-recebidas" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"><input type="text" class="currency-input" id="venda-moedas-recebidas" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"></div><label>Troco a devolver</label><div class="cash-breakdown"><input type="text" class="currency-input" id="venda-cedulas-troco" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"><input type="text" class="currency-input" id="venda-moedas-troco" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"></div></div>
+        <div class="form-actions"><div class="total"><small>Total</small><strong id="venda-total">R$ 0,00</strong></div><button type="submit" class="btn btn-primary">Registrar venda</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ ABA 3: HISTÓRICO ============ -->
+  <section id="tab-historico" class="tab-panel history-panel">
+    <div class="history-page-head">
+      <div><h1>Histórico</h1><p class="history-lede">Recargas com energia, pagamento e operador</p></div>
+      <div class="cash-head-actions"><button type="button" class="btn btn-outline" id="btn-compartilhar" title="Enviar resumo no WhatsApp"><svg aria-hidden="true"><use href="#i-share"/></svg><span class="label-wide">Enviar resumo</span></button></div>
+    </div>
+    <div class="history-filters"><input type="search" id="busca" placeholder="Buscar placa, cliente, modelo ou pagamento" autocomplete="off"><input type="date" id="filtro-de" aria-label="Data inicial"><input type="date" id="filtro-ate" aria-label="Data final"><select id="filtro-pagamento" aria-label="Filtrar por pagamento"><option value="">Todos os pagamentos</option><option value="Pix">Pix</option><option value="Dinheiro">Dinheiro</option><option value="Crédito">Crédito</option><option value="Débito">Débito</option><option value="Pendente">Pendente</option></select><select id="filtro-perfil" aria-label="Filtrar por operador"><option value="">Todos os operadores</option></select><select id="filtro-turno" aria-label="Filtrar por turno"><option value="">Todos os turnos</option><option value="1">Turno 1</option><option value="2">Turno 2</option></select><input type="date" id="data-relatorio" aria-label="Data do relatório"><button type="button" class="btn btn-outline" id="btn-limpar-filtro">Limpar filtros</button></div>
+    <div class="history-stats"><div class="history-stat"><span>Abastecimentos</span><strong id="stat-qtd">0</strong><small>No filtro atual</small></div><div class="history-stat"><span>Energia</span><strong id="stat-kwh">0,00 kWh</strong><small>Consumo registrado</small></div><div class="history-stat"><span>Recarga</span><strong id="stat-total">R$ 0,00</strong><small>Pagamentos confirmados</small></div><div class="history-stat"><span>Conveniência</span><strong id="stat-consumo">R$ 0,00</strong><small>Consumos vinculados</small></div></div>
+    <div class="card list-surface history-surface">
+      <div id="lista-historico" class="history-data-list"></div>
+      <div id="empty-historico" class="empty-state history-empty"><strong>Nenhum abastecimento encontrado</strong>Ajuste os filtros ou finalize uma sessão ativa.</div>
+    </div>
+  </section>
+
+  <!-- ============ ABA 5: CAIXA ============ -->
+  <section id="tab-caixa" class="tab-panel cash-panel">
+    <div class="cash-page-head">
+      <div><h1>Caixa</h1><p class="cash-lede">Dinheiro físico da gaveta</p></div>
+      <div class="cash-head-actions"><button type="button" class="btn btn-outline" id="btn-compartilhar-caixa" title="Enviar relatório do caixa no WhatsApp"><svg aria-hidden="true"><use href="#i-share"/></svg><span class="label-wide">Enviar</span></button></div>
+    </div>
+    <div class="cash-layout">
+      <div class="cash-summary">
+        <section class="cash-turno" id="caixa-turno" aria-labelledby="caixa-turno-titulo">
+          <div class="cash-turno-head"><h2 id="caixa-turno-titulo">Caixa do turno</h2><span class="cash-turno-quando" id="caixa-turno-quando"></span></div>
+          <strong class="cash-turno-valor" id="caixa-turno-valor">R$ 0,00</strong>
+          <p class="cash-turno-vazio" id="caixa-turno-vazio">Nenhum dinheiro recebido neste turno ainda.</p>
+          <dl class="cash-turno-especies"><div><dt>Cédulas</dt><dd id="caixa-turno-cedulas">R$ 0,00</dd></div><div><dt>Moedas</dt><dd id="caixa-turno-moedas">R$ 0,00</dd></div></dl>
+          <div class="cash-turno-gaveta">
+            <div class="cash-turno-barra" id="caixa-turno-barra" aria-hidden="true"><span></span></div>
+            <dl class="cash-turno-detalhe"><div class="cash-turno-fundo"><dt>Fundo inicial</dt><dd id="caixa-turno-fundo">R$ 0,00</dd></div><div><dt>Recebido</dt><dd id="caixa-turno-recebido">R$ 0,00</dd></div><div><dt>Troco</dt><dd id="caixa-turno-troco">R$ 0,00</dd></div><div id="caixa-turno-pix-linha" hidden><dt>Troco em Pix</dt><dd id="caixa-turno-pix">R$ 0,00</dd></div><div id="caixa-turno-outros-linha" hidden><dt>Retiradas e ajustes</dt><dd id="caixa-turno-outros"></dd></div></dl>
+          </div>
+          <p class="aviso-estoque" id="caixa-turno-fechado" role="status" hidden></p>
+          <button type="button" class="btn btn-outline btn-block" id="btn-ver-lancamentos-turno"><svg aria-hidden="true"><use href="#i-cash"/></svg>Ver lançamentos do turno</button>
+        </section>
+        <div class="cash-stats"><div class="cash-stat cash-stat-total"><span>Total em caixa</span><strong id="stat-caixa-total">R$ 0,00</strong><small>Saldo físico</small></div><div class="cash-stat"><span>Cédulas</span><strong id="stat-caixa-cedulas">R$ 0,00</strong><small>Contagem atual</small></div><div class="cash-stat"><span>Moedas</span><strong id="stat-caixa-moedas">R$ 0,00</strong><small>Contagem atual</small></div></div>
+        <div class="cash-actions" data-admin-caixa>
+          <button type="button" class="btn btn-primary" id="btn-abrir-contagem"><svg aria-hidden="true"><use href="#i-cash"/></svg>Atualizar contagem</button>
+          <button type="button" class="btn btn-outline" id="btn-abrir-retirada"><svg aria-hidden="true"><use href="#i-out"/></svg>Registrar retirada</button>
+        </div>
+      </div>
+      <div>
+        <div class="op-section-title"><h2>Movimentações</h2></div>
+        <div class="cash-filters"><input type="date" id="filtro-caixa-de" aria-label="Data inicial"><input type="date" id="filtro-caixa-ate" aria-label="Data final"><select id="filtro-caixa-turno" aria-label="Filtrar por turno"><option value="">Todos os turnos</option><option value="1">Turno 1</option><option value="2">Turno 2</option></select><input type="date" id="data-relatorio-caixa" aria-label="Data do relatório"><button type="button" class="btn btn-outline" id="btn-limpar-filtro-caixa">Limpar filtros</button></div>
+        <div class="card list-surface cash-history">
+          <div id="lista-caixa" class="cash-data-list"></div>
+          <div id="empty-caixa" class="empty-state cash-empty"><strong>Nenhuma movimentação</strong>As contagens e retiradas aparecem aqui.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOLHAS DO CAIXA ============ -->
+  <div id="modal-caixa-contagem" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header"><h2>Atualizar contagem</h2><button type="button" class="modal-close" data-fechar-modal="modal-caixa-contagem" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <p class="hint">Conte o dinheiro da gaveta. A diferença para o valor do sistema vira entrada ou saída no histórico.</p>
+      <form id="form-caixa-contagem" class="cash-form"><div class="cash-form-grid"><div class="field"><label for="caixa-cedulas">Cédulas (R$) <span class="req">*</span></label><input type="text" class="currency-input" id="caixa-cedulas" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off" required></div><div class="field"><label for="caixa-moedas">Moedas (R$) <span class="req">*</span></label><input type="text" class="currency-input" id="caixa-moedas" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off" required></div></div><button type="button" class="btn btn-outline btn-block" id="btn-contar-cedulas" aria-expanded="false" aria-controls="contagem-especies"><svg aria-hidden="true"><use href="#i-cash"/></svg>Contar por cédula</button>
+            <div id="contagem-especies" class="contagem-especies" hidden></div>
+            <div class="contagem-resumo" id="contagem-resumo" aria-live="polite"></div>
+            <div class="form-actions"><button type="submit" class="btn btn-primary">Salvar contagem</button></div></form>
+    </div>
+  </div>
+  <div id="modal-caixa-registro" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header"><div class="modal-titulos"><h2 id="cxr-titulo">Registro</h2><p class="modal-sub" id="cxr-info"></p></div><button type="button" class="modal-close" data-fechar-modal="modal-caixa-registro" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <p class="hint">Corrija o dinheiro que entrou e o troco que saiu do caixa neste registro. O saldo do caixa é recalculado.</p>
+      <form id="form-caixa-registro" class="cash-form"><div class="cash-form-grid"><div class="field"><label for="cxr-cedulas-recebidas">Entrada: cédulas (R$)</label><input type="text" class="currency-input" id="cxr-cedulas-recebidas" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"></div><div class="field"><label for="cxr-moedas-recebidas">Entrada: moedas (R$)</label><input type="text" class="currency-input" id="cxr-moedas-recebidas" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"></div><div class="field"><label for="cxr-cedulas-troco">Saída (troco): cédulas (R$)</label><input type="text" class="currency-input" id="cxr-cedulas-troco" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"></div><div class="field"><label for="cxr-moedas-troco">Saída (troco): moedas (R$)</label><input type="text" class="currency-input" id="cxr-moedas-troco" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"></div></div><p class="contagem-resumo" id="cxr-resumo" aria-live="polite"></p><div class="form-actions"><button type="submit" class="btn btn-primary">Salvar correção</button></div></form>
+    </div>
+  </div>
+  <div id="modal-caixa-retirada" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header"><h2 id="caixa-retirada-titulo">Registrar retirada</h2><button type="button" class="modal-close" data-fechar-modal="modal-caixa-retirada" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <p class="hint" id="caixa-retirada-intro" hidden>Dinheiro recebido no turno, já descontado o troco. Confira com a gaveta antes de registrar.</p>
+      <p class="aviso-estoque" id="caixa-retirada-aviso" role="status" hidden></p>
+      <form id="form-caixa-retirada" class="cash-form"><div class="cash-form-grid"><div class="field"><label for="caixa-retirada-cedulas">Cédulas (R$)</label><input type="text" class="currency-input" id="caixa-retirada-cedulas" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"></div><div class="field"><label for="caixa-retirada-moedas">Moedas (R$)</label><input type="text" class="currency-input" id="caixa-retirada-moedas" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"></div><div class="field"><label for="caixa-retirada-motivo">Motivo <span class="req">*</span></label><input type="text" id="caixa-retirada-motivo" placeholder="Ex.: sangria do turno" autocomplete="off" required></div></div><div class="form-actions"><button type="submit" class="btn btn-primary" id="btn-registrar-retirada">Registrar retirada</button><button type="button" class="btn btn-outline" id="btn-enviar-sem-saida" hidden>Enviar sem registrar saída</button></div><p class="help">Informe pelo menos uma espécie. Operador ativo: <strong id="caixa-operador-hint">—</strong></p></form>
+    </div>
+  </div>
+
+  <!-- ============ ABA 4: CONFIGURAÇÕES ============ -->
+  <section id="tab-config" class="tab-panel more-panel">
+    <div class="more-page-head"><div><h1>Configurações</h1><p class="more-lede">Posto, comunicação, operadores e dados</p></div></div>
+    <div class="settings-group">
+      <h2>Posto</h2>
+      <div class="card settings-list"><button type="button" class="settings-row" data-abrir-cfg="modal-cfg-estacao"><span class="settings-icon"><svg aria-hidden="true"><use href="#i-bolt"/></svg></span><span class="settings-text"><strong>Estação e aparência</strong><span id="cfg-resumo-estacao"></span></span><svg class="settings-chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button><button type="button" class="settings-row" data-abrir-cfg="modal-cfg-perfis"><span class="settings-icon"><svg aria-hidden="true"><use href="#i-users"/></svg></span><span class="settings-text"><strong>Operadores</strong><span id="cfg-resumo-perfis"></span></span><svg class="settings-chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button><button type="button" class="settings-row" data-abrir-cfg="modal-cfg-pin"><span class="settings-icon"><svg aria-hidden="true"><use href="#i-lock"/></svg></span><span class="settings-text"><strong>PIN do admin</strong><span id="cfg-resumo-pin"></span></span><svg class="settings-chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button><button type="button" class="settings-row" id="btn-abrir-turnos"><span class="settings-icon"><svg aria-hidden="true"><use href="#i-clock"/></svg></span><span class="settings-text"><strong>Turnos</strong><span id="cfg-resumo-turnos"></span></span><svg class="settings-chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></div>
+    </div>
+    <div class="settings-group">
+      <h2>Comunicação</h2>
+      <div class="card settings-list"><button type="button" class="settings-row" data-abrir-cfg="modal-cfg-whatsapp"><span class="settings-icon"><svg aria-hidden="true"><use href="#i-share"/></svg></span><span class="settings-text"><strong>Mensagem do WhatsApp</strong><span id="cfg-resumo-whatsapp"></span></span><svg class="settings-chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></div>
+    </div>
+    <div class="settings-group">
+      <h2>Dados</h2>
+      <div class="card settings-list"><button type="button" class="settings-row" id="btn-exportar-backup"><span class="settings-icon"><svg aria-hidden="true"><use href="#i-export"/></svg></span><span class="settings-text"><strong>Exportar backup</strong><span id="cfg-resumo-backup">Baixa um arquivo com todos os dados deste aparelho</span></span></button><button type="button" class="settings-row" id="btn-restaurar-backup"><span class="settings-icon"><svg aria-hidden="true"><use href="#i-import"/></svg></span><span class="settings-text"><strong>Restaurar backup</strong><span>Substitui os dados deste aparelho pelos de um arquivo</span></span></button><input type="file" id="arquivo-backup" accept="application/json,.json" hidden></div>
+      <div class="card settings-list"><button type="button" class="settings-row danger" id="btn-limpar-historico"><span class="settings-icon"><svg aria-hidden="true"><use href="#i-trash"/></svg></span><span class="settings-text"><strong>Apagar histórico de recargas</strong><span>Remove os registros deste aparelho</span></span></button><button type="button" class="settings-row danger" id="btn-limpar-vendas"><span class="settings-icon"><svg aria-hidden="true"><use href="#i-trash"/></svg></span><span class="settings-text"><strong>Apagar histórico de vendas</strong><span>Remove as vendas deste aparelho</span></span></button><button type="button" class="settings-row danger" id="btn-recomecar"><span class="settings-icon"><svg aria-hidden="true"><use href="#i-trash"/></svg></span><span class="settings-text"><strong>Apagar tudo e configurar um posto novo</strong><span>Limpa todos os dados e abre a configuração inicial</span></span></button></div>
+      <p class="hint settings-nota">Os dados ficam só neste aparelho. Apagar não pode ser desfeito: exporte um backup antes.</p>
+    </div>
+  </section>
+
+  <!-- ============ FOLHAS DE CONFIGURAÇÃO ============ -->
+  <div id="modal-cfg-estacao" class="modal-overlay" data-cfg-folha>
+    <div class="modal">
+      <div class="modal-header"><h2>Estação e aparência</h2><button type="button" class="modal-close" data-fechar-modal="modal-cfg-estacao" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <form id="form-config" class="more-form"><div class="more-form-grid"><div class="field"><label for="cfg-tarifa">Tarifa por kWh (R$) <span class="req">*</span></label><input type="text" class="currency-input" id="cfg-tarifa" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off" required><span class="hint">Usada na mensagem do WhatsApp e como valor padrão ao finalizar.</span></div></div><div class="field"><label>Bicos de recarga <span class="req">*</span></label><div id="cfg-carregadores"></div><button type="button" class="btn btn-outline" id="btn-adicionar-carregador">Adicionar bico</button><span class="hint">Defina a potência máxima de cada bico. Cada um aparece individualmente na operação e na mensagem do WhatsApp.</span></div><div class="field"><label for="cfg-cor">Cor principal</label><div class="more-color-row"><input type="color" id="cfg-cor" value="#f97316" aria-label="Escolher cor principal"><span id="cfg-cor-valor" class="hint"></span></div><span class="hint">Aplicada nos botões, placas e no cabeçalho.</span></div><div class="field"><label for="cfg-cor-secundaria">Cor secundária</label><div class="more-color-row"><input type="color" id="cfg-cor-secundaria" value="#fff7ed" aria-label="Escolher cor secundária"><span id="cfg-cor-secundaria-valor" class="hint"></span></div><span class="hint">Aplicada aos objetos selecionados.</span></div><div class="field"><label for="cfg-nome-sistema">Nome do sistema</label><input type="text" id="cfg-nome-sistema" value="Eletroposto" maxlength="80" autocomplete="off"><span class="hint">Aparece no topo, nas mensagens do WhatsApp e nos relatórios.</span></div><div class="field"><label for="cfg-logo-sistema">Logo do posto</label><div class="more-logo-row"><img id="cfg-logo-preview" src="icon-192.png" alt="Logo atual do posto"><input type="file" id="cfg-logo-sistema" accept="image/png,image/jpeg"><span class="hint">Opcional. Usada no topo e no ícone da aba do navegador.</span></div></div><div class="field"><label for="cfg-atendimento">Texto de atendimento</label><input type="text" id="cfg-atendimento" autocomplete="off" placeholder="Mensagem usada no status compartilhado"></div><div class="more-form-grid"><div class="field"><label for="cfg-localizacao">Localização</label><input type="text" id="cfg-localizacao" autocomplete="off" placeholder="Endereço do eletroposto"></div><div class="field"><label for="cfg-mapa">Link do mapa</label><input type="url" id="cfg-mapa" placeholder="https://..."></div></div><div class="form-actions"><button type="submit" class="btn btn-primary">Salvar configurações</button></div></form>
+    </div>
+  </div>
+  <div id="modal-cfg-turnos" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header"><div class="modal-titulos"><h2>Turnos</h2><p class="modal-sub">O dia operacional começa no início do primeiro turno</p></div><button type="button" class="modal-close" data-fechar-modal="modal-cfg-turnos" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <form id="form-turnos" novalidate>
+        <div id="turnos-lista" class="turnos-lista"></div>
+        <button type="button" class="btn btn-quiet btn-sm" id="btn-add-turno"><svg aria-hidden="true" class="icon-inline"><use href="#i-plus"/></svg>Adicionar turno</button>
+        <p class="help">O último turno pode passar da meia-noite. Um horário fora dos turnos conta no turno que acabou de terminar. Registros antigos mantêm o turno com que foram salvos.</p>
+        <p class="aviso-estoque" id="turnos-erro" role="alert" hidden></p>
+        <div class="form-actions"><button type="submit" class="btn btn-primary btn-block">Salvar turnos</button></div>
+      </form>
+    </div>
+  </div>
+  <div id="modal-cfg-perfis" class="modal-overlay" data-cfg-folha>
+    <div class="modal">
+      <div class="modal-header"><h2>Operadores</h2><button type="button" class="modal-close" data-fechar-modal="modal-cfg-perfis" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <form id="form-perfil" class="more-form"><div class="more-form-grid more-profile-grid"><div class="field"><label for="perfil-nome">Nome <span class="req">*</span></label><input type="text" id="perfil-nome" autocomplete="off" required></div><div class="field"><label for="perfil-turno">Turno <span class="req">*</span></label><select id="perfil-turno" required><option value="">Selecione o turno</option><option value="1">Turno 1</option><option value="2">Turno 2</option></select></div><div class="field"><label for="perfil-foto">Foto</label><input type="file" id="perfil-foto" accept="image/*"><span class="hint">Opcional. A imagem é reduzida automaticamente.</span></div></div><div class="form-actions"><button type="submit" class="btn btn-primary">Adicionar operador</button></div></form><div id="lista-perfis" class="more-profile-list"></div>
+    </div>
+  </div>
+  <div id="modal-cfg-pin" class="modal-overlay" data-cfg-folha>
+    <div class="modal">
+      <div class="modal-header"><h2>PIN do admin</h2><button type="button" class="modal-close" data-fechar-modal="modal-cfg-pin" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <p class="hint">O operador pede este PIN ao admin para corrigir o dinheiro de um registro no Caixa. Fica salvo neste aparelho.</p>
+      <form id="form-cfg-pin" autocomplete="off">
+        <div class="field"><label for="cfg-pin-novo">Novo PIN (4 números)</label><input type="password" id="cfg-pin-novo" class="pin-campo" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" required></div>
+        <div class="field"><label for="cfg-pin-confirmar">Repita o PIN</label><input type="password" id="cfg-pin-confirmar" class="pin-campo" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" required></div>
+        <div class="form-actions"><button type="submit" class="btn btn-primary btn-block">Salvar PIN</button></div>
+      </form>
+    </div>
+  </div>
+  <div id="modal-pin-admin" class="modal-overlay">
+    <div class="modal modal-pin" role="dialog" aria-modal="true" aria-labelledby="pin-admin-titulo">
+      <div class="modal-header"><h2 id="pin-admin-titulo">PIN do admin</h2><button type="button" class="modal-close" id="btn-pin-fechar" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <p class="hint" id="pin-admin-motivo"></p>
+      <form id="form-pin-admin" autocomplete="off">
+        <div class="pin-caixas" id="pin-caixas" role="group" aria-label="PIN de 4 números">
+          <input type="password" class="pin-digito" inputmode="numeric" maxlength="1" aria-label="1º número">
+          <input type="password" class="pin-digito" inputmode="numeric" maxlength="1" aria-label="2º número">
+          <input type="password" class="pin-digito" inputmode="numeric" maxlength="1" aria-label="3º número">
+          <input type="password" class="pin-digito" inputmode="numeric" maxlength="1" aria-label="4º número">
+        </div>
+        <p class="pin-erro" id="pin-admin-erro" role="alert"></p>
+        <div class="form-actions"><button type="button" class="btn btn-outline" id="btn-pin-cancelar">Cancelar</button><button type="submit" class="btn btn-primary">Confirmar</button></div>
+      </form>
+    </div>
+  </div>
+  <div id="modal-cfg-whatsapp" class="modal-overlay" data-cfg-folha>
+    <div class="modal">
+      <div class="modal-header"><h2>Mensagem de status do WhatsApp</h2><button type="button" class="modal-close" data-fechar-modal="modal-cfg-whatsapp" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <pre class="wp-preview more-whatsapp-preview" id="preview-whatsapp-config"></pre>
+    </div>
+  </div>
+</div>
+
+<nav class="bottom-nav" aria-label="Navegação">
+    <button type="button" class="tab-btn" data-tab="tab-dashboard"><span class="tab-icon" aria-hidden="true"><svg><use href="#i-chart"/></svg></span><span class="tab-label">Dashboard</span></button>
+    <button type="button" class="tab-btn" data-tab="tab-analise"><span class="tab-icon" aria-hidden="true"><svg><use href="#i-pin"/></svg></span><span class="tab-label">Análise</span></button>
+    <button type="button" class="tab-btn active" data-tab="tab-andamento"><span class="tab-icon" aria-hidden="true"><svg><use href="#i-bolt"/></svg></span><span class="tab-label">Operação</span></button>
+    <button type="button" class="tab-btn" data-tab="tab-cadastro"><span class="tab-icon" aria-hidden="true"><svg><use href="#i-users"/></svg></span><span class="tab-label">Cadastros</span></button>
+    <button type="button" class="tab-btn" data-tab="tab-vendas"><span class="tab-icon" aria-hidden="true"><svg><use href="#i-bag"/></svg></span><span class="tab-label">Vendas</span></button>
+    <button type="button" class="tab-btn" data-tab="tab-historico"><span class="tab-icon" aria-hidden="true"><svg><use href="#i-clock"/></svg></span><span class="tab-label">Histórico</span></button>
+    <button type="button" class="tab-btn" data-tab="tab-caixa"><span class="tab-icon" aria-hidden="true"><svg><use href="#i-wallet"/></svg></span><span class="tab-label">Caixa</span></button>
+    <button type="button" class="tab-btn" data-tab="tab-config"><span class="tab-icon" aria-hidden="true"><svg><use href="#i-settings"/></svg></span><span class="tab-label">Configurações</span></button>
+</nav>
+
+
+  <!-- ============ FOLHA: APAGAR DADOS ============ -->
+  <div id="modal-apagar" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header"><h2 id="apagar-titulo">Apagar dados</h2><button type="button" class="modal-close" data-fechar-modal="modal-apagar" title="Fechar" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <div class="alert error show apagar-aviso" id="apagar-aviso"></div>
+      <div class="field">
+        <label for="apagar-confirmacao">Digite <strong>apagar</strong> para confirmar</label>
+        <input type="text" id="apagar-confirmacao" autocomplete="off" autocapitalize="off" spellcheck="false">
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline" data-fechar-modal="modal-apagar">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="btn-confirmar-apagar" disabled>Apagar</button>
+      </div>
+    </div>
+  </div>
+
+<div id="modal-combo-selecao" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="combo-selecao-titulo">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-header"><h2 id="combo-selecao-titulo">Montar combo</h2><button type="button" class="modal-close" id="combo-selecao-fechar" aria-label="Fechar">×</button></div>
+    <p id="combo-selecao-info" class="muted"></p>
+    <div id="combo-selecao-grupos" class="combo-selecao-grupos"></div>
+    <div class="form-actions"><button type="button" class="btn btn-outline" id="combo-selecao-cancelar">Cancelar</button><button type="button" class="btn btn-primary" id="combo-selecao-confirmar">Confirmar escolhas</button></div>
+  </div>
+</div>
+
+  <!-- ============ ASSISTENTE: CONFIGURAR O POSTO ============ -->
+  <div id="modal-assistente" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="assistente-titulo">
+    <div class="modal assistente">
+      <div class="modal-header">
+        <div class="modal-titulos"><h2 id="assistente-titulo">Configurar o posto</h2><p class="modal-sub" id="assistente-passo">Passo 1 de 4</p></div>
+      </div>
+      <ol class="assistente-trilha" aria-hidden="true"><li></li><li></li><li></li><li></li></ol>
+      <section class="assistente-etapa" data-etapa="1">
+        <h3>Como o posto se chama?</h3>
+        <p class="help">O nome aparece no topo, nas mensagens do WhatsApp e nos relatórios. Dá para trocar depois em Configurações.</p>
+        <div class="field"><label for="ass-nome">Nome do posto</label><input type="text" id="ass-nome" maxlength="80" autocomplete="off" placeholder="Eletroposto"></div>
+        <div class="assistente-demo">
+          <p>Só quer conhecer o sistema? Entre num posto fictício com 30 dias de recargas, vendas, estoque e caixa.</p>
+          <button type="button" class="btn btn-outline btn-block" id="btn-entrar-demo">Entrar como demonstração</button>
+        </div>
+      </section>
+      <section class="assistente-etapa" data-etapa="2" hidden>
+        <h3>Quantos bicos de recarga?</h3>
+        <p class="help">Informe a potência máxima de cada bico. Ela entra na estimativa de tempo de cada recarga.</p>
+        <div class="field"><label for="ass-qtd-bicos">Quantidade de bicos</label><input type="number" id="ass-qtd-bicos" min="1" max="20" step="1" inputmode="numeric"></div>
+        <div id="ass-bicos" class="assistente-bicos"></div>
+      </section>
+      <section class="assistente-etapa" data-etapa="3" hidden>
+        <h3>Quanto custa o kWh?</h3>
+        <p class="help">É o valor padrão ao finalizar uma recarga e o que aparece na mensagem de status.</p>
+        <div class="field"><label for="ass-tarifa">Tarifa por kWh (R$)</label><input type="text" class="currency-input" id="ass-tarifa" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"></div>
+      </section>
+      <section class="assistente-etapa" data-etapa="4" hidden>
+        <h3>Quem trabalha e em que horário?</h3>
+        <p class="help">Os turnos organizam o caixa, os relatórios e o pedido de operador. O último turno pode passar da meia-noite.</p>
+        <div id="ass-turnos" class="turnos-lista"></div>
+        <button type="button" class="btn btn-quiet btn-sm" id="ass-add-turno"><svg aria-hidden="true" class="icon-inline"><use href="#i-plus"/></svg>Adicionar turno</button>
+        <p class="aviso-estoque" id="ass-turnos-erro" role="alert" hidden></p>
+        <div class="field"><label for="ass-operador">Operadores</label><div class="assistente-add"><input type="text" id="ass-operador" maxlength="80" autocomplete="off" placeholder="Nome do operador"><select id="ass-operador-turno" aria-label="Turno do operador"></select><button type="button" class="btn btn-outline" id="ass-add-operador">Adicionar</button></div></div>
+        <ul id="ass-operadores" class="assistente-operadores"></ul>
+      </section>
+      <div class="assistente-acoes">
+        <button type="button" class="btn btn-quiet" id="ass-voltar" hidden>Voltar</button>
+        <button type="button" class="btn btn-outline" id="ass-pular">Pular</button>
+        <button type="button" class="btn btn-primary" id="ass-continuar">Continuar</button>
+      </div>
+    </div>
+  </div>
+
+<script src="core.js"></script>
+  <script src="demo.js"></script>
+  <script src="app.js"></script>
+  <script type="module" src="analise-entrada.js"></script>
+</body>
+</html>

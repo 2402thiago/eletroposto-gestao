@@ -1,0 +1,11 @@
+node_modules/
+public/
+*.log
+.env.local
+.vercel/
+
+.vercel
+.env*
+
+# Saída do graphify (local)
+graphify-out/
